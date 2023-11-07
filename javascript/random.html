@@ -1,46 +1,29 @@
 <script>
-/**
-  * Scenario: There are a total of 500 cards, numbered 1-500.
-  * 1-10 has only a 1% chance of being drawn, while 11-100 has a 10% chance of being drawn, and others can be drawn at will.
-  */
-function getRandomNumber() {
-  // total set
-  const total = 500;
-  // 
-  const range1 = 10;
-  const range2 = 100;
-  const range3 = total - range1 - range2;
+const cardTypes = [
+ // You can customize the ID and corresponding probability for each type
+ // For example
+  { ids: [1, 2, 3, 4, 5, 6, 7, 8], rate: 0.01 },//type 1: 1% chance
+  { ids: [201, 202, 203, 204, 205], rate: 0.05 }, //type 2: 5% chance
+  { ids: Array.from({ length: 397 - 300 }, (_, i) => 300 + i + 1), rate: 1 - 0.01 - 0.05 },//the other
+];
+function drawCards(times) {
+  const result = [];
 
-  const randomNum = Math.random();
-  if (randomNum < 0.01) { // 1% chance
-    return Math.floor(randomNum * range1) + 1;
-  } else if (randomNum < 0.1) {
-    return Math.floor(randomNum * range2) + 11;
-  } else {
-    return Math.floor(randomNum * range3) + 101;
+  for (let i = 0; i < times; i++) {
+    let random = Math.random();
+    let sumRate = 0;
+
+    for (const cardType of cardTypes) {
+      sumRate += cardType.rate;
+      if (random <= sumRate) {
+        result.push(cardType.ids[Math.floor(Math.random() * cardType.ids.length)]);
+        break;
+      }
+    }
   }
-}
 
-//red(getRandomNumber());
+  return result;
+}
+console.log(drawCards(10));
 
-function red(str){
-	console.log(`%c${str}`,'color: red')
-}
-var i=0;
-function test(idx){
-	var num = getRandomNumber();
-	if (num == 1)
-	{
-		red(num);
-	}else{
-		console.log(idx+': '+num);
-	}
-}
-var intervalid = setInterval(()=>{
-	i++;
-	if (i >= 100) {
-		clearInterval(intervalid);
-	  }
-	test(i);
-}, 10);
 </script>
